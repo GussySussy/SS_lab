@@ -19,7 +19,6 @@ void sjfScheduling(struct Process processes[], int n) {
     int waiting_time[n];
     int turnaround_time[n];
 
-    // Calculate waiting time and turnaround time
     waiting_time[0] = 0;
     turnaround_time[0] = processes[0].burst_time;
 
@@ -28,7 +27,6 @@ void sjfScheduling(struct Process processes[], int n) {
         turnaround_time[i] = waiting_time[i] + processes[i].burst_time;
     }
 
-    // Display the result in a table
     printf("Process\tBurst Time\tWaiting Time\tTurnaround Time\n");
     for (int i = 0; i < n; i++) {
         printf("P%d\t%d\t\t%d\t\t%d\n", processes[i].id, processes[i].burst_time, waiting_time[i], turnaround_time[i]);
