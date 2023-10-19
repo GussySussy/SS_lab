@@ -21,7 +21,6 @@ void roundRobinScheduling(struct Process processes[], int n, int time_quantum) {
                 int execute_time = (processes[i].remaining_time < time_quantum) ? processes[i].remaining_time : time_quantum;
                 processes[i].remaining_time -= execute_time;
 
-                // Print Gantt chart for this time quantum
                 printf("|  %2d  |   P%d   \n", current_time, processes[i].id);
 
                 current_time += execute_time;
