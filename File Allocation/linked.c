@@ -17,16 +17,23 @@ int fcnt = 0;
 
 void allocate(int st, int size)
 {
-    int count = 0,blks[size];
+    if (st + size > MAX_BLOCKS)
+    {
+        printf("\nAllocation exceeds memory blocks");
+        return;
+    }
+
+    int count = 0, blks[size];
     for (int i = st; i < MAX_BLOCKS; i++)
     {
         if (blocks[i] != 1)
         {
+            blks[count] = i;
             count++;
-            blks[count]=i;
-            if(count==size){
-                break;
-            }
+        }
+        if (count == size)
+        {
+            break;
         }
     }
     if (count == size)
@@ -63,7 +70,7 @@ void display()
 
 void main()
 {
-    int st, size, ch;
+    int st, size, ch = 1;
     char file_name[100];
 
     do
@@ -71,7 +78,7 @@ void main()
         if (ch == 1)
         {
             printf("\nEnter the name of the file : ");
-            scanf("%s", &file_name);
+            scanf("%s", file_name);
             strcpy(files[fcnt].fname, file_name);
 
             printf("\nEnter the starting block : ");
