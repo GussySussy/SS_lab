@@ -11,12 +11,6 @@ int main()
     input = fopen("input.txt", "r");
     output = fopen("output2.txt", "w");
 
-    if (input == NULL || output == NULL)
-    {
-        perror("Error opening file");
-        return 1;
-    }
-
     fscanf(input, "%s %s %x %x", type, name, &address, &length);
     if (!strcmp(type, "H"))
     {
