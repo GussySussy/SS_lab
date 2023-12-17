@@ -37,7 +37,7 @@ void allocate(int size)
     while (count < size)
     {
         int index = checkIndex();
-        if (index)
+        if (0 <= index && index < MAX_BLOCKS)
         {
             indices[count] = index;
         }
