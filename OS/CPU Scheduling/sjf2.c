@@ -1,81 +1,91 @@
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdlib.h>
 
 // Structure to represent a process
-struct Process
+typedef struct
 {
-    int process_id;
-    int arrival_time;
-    int burst_time;
-    int completion_time;
-    int turnaround_time;
-    int waiting_time;
-    bool is_completed;
-};
+    int pid;
+    int at;
+    int bt;
+    int ct;
+    int tat;
+    int wt;
+    int completed;
+} process;
 
-// Function to perform SJF scheduling
-void sjf(struct Process processes[], int n)
+void display(process p[], int n)
 {
-    int current_time = 0;
-    int completed_processes = 0;
-
-    while (completed_processes < n)
+    printf("\nPid\tArrival Time\tBurst Time\tCompletion Time\tTurnaround Time\tWaiting Time");
+    for (int i = 0; i < n; i++)
     {
-        int shortest_index = -1;
-        int shortest_burst = 999999;
-
-        for (int i = 0; i < n; i++)
-        {
-            if (!processes[i].is_completed && processes[i].arrival_time <= current_time && processes[i].burst_time < shortest_burst)
-            {
-                shortest_index = i;
-                shortest_burst = processes[i].burst_time;
-            }
-        }
-
-        if (shortest_index == -1)
-        {
-            current_time++;
-        }
-        else
-        {
-            processes[shortest_index].completion_time = current_time + processes[shortest_index].burst_time;
-            processes[shortest_index].turnaround_time = processes[shortest_index].completion_time - processes[shortest_index].arrival_time;
-            processes[shortest_index].waiting_time = processes[shortest_index].turnaround_time - processes[shortest_index].burst_time;
-            processes[shortest_index].is_completed = true;
-            completed_processes++;
-            current_time = processes[shortest_index].completion_time;
-        }
+        printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d", p[i].pid, p[i].at, p[i].bt, p[i].ct, p[i].tat, p[i].wt);
     }
 }
 
-int main()
+void main()
 {
-    int n;
-    printf("Enter the number of processes: ");
+    int n, tot_tat = 0, tot_wt = 0;
+
+    printf("\nEnter the number of p : ");
     scanf("%d", &n);
 
-    struct Process processes[n];
+    process p[n];
 
     for (int i = 0; i < n; i++)
     {
-        processes[i].process_id = i;
-        printf("Enter arrival time for process P%d: ", i);
-        scanf("%d", &processes[i].arrival_time);
-        printf("Enter burst time for process P%d: ", i);
-        scanf("%d", &processes[i].burst_time);
-        processes[i].is_completed = false;
+        p[i].pid = i;
+        printf("\nEnter the arrival time of process %d : ", i);
+        scanf("%d", &p[i].at);
+        printf("\nEnter the burst time of process %d : ", i);
+        scanf("%d", &p[i].bt);
+        p[i].completed = 0;
     }
 
-    sjf(processes, n);
-
-    printf("Process\tArrival Time\tBurst Time\tCompletion Time\tTurnaround Time\tWaiting Time\n");
+    // sorting by burst time
     for (int i = 0; i < n; i++)
     {
-        printf("P%d\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n", processes[i].process_id, processes[i].arrival_time,
-               processes[i].burst_time, processes[i].completion_time, processes[i].turnaround_time,
-               processes[i].waiting_time);
+        for (int j = i + 1; j < n; j++)
+        {
+            if (p[j].bt < p[i].bt)
+            {
+                process temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+            }
+        }
     }
 
-    return 0;
+    int time = p[0].at;
+
+    // finding lowest arrival time and storing it in time
+    for (int i = 0; i < n; i++)
+    {
+        if (p[i].at < time)
+        {
+            time = p[i].at;
+        }
+    }
+
+    int count = n;
+    while (count)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            if (p[i].at <= time && !p[i].completed)
+            {
+                time += p[i].bt;
+                p[i].ct = time;
+                p[i].tat = p[i].ct - p[i].at;
+                p[i].wt = p[i].tat - p[i].bt;
+                p[i].completed = 1;
+                tot_tat += p[i].tat;
+                tot_wt += p[i].wt;
+                break;
+            }
+        }
+        count--;
+    }
+
+    display(p, n);
+    printf("\nAverage Waiting Time : %0.2f\nAverage Waiting Time : %0.2f", ((float)tot_tat / 2), ((float)tot_wt / 2));
 }
